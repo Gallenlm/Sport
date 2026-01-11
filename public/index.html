@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Live NBA Board</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">NBA LIVE BOARD</p>
+          <h1>Live Matchups, Odds, and True Shooting</h1>
+          <p class="subhead">
+            Scores refresh automatically. Click a matchup to calculate true shooting.
+          </p>
+        </div>
+        <div class="badge" id="gamesBadge">0 games loaded</div>
+      </header>
+
+      <section class="board" id="gamesBoard">
+        <div class="loading">Loading today&apos;s NBA games...</div>
+      </section>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>
