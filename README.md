@@ -1,55 +1,44 @@
-# Live NBA Board
+# NBA Live PPP Edge Logger
 
-A Railway-deployable Node.js app that serves a live NBA scoreboard with moneyline odds and on-demand true shooting calculations.
+Minimal one-page FastAPI app for logging NBA live “PPP edge” misprices with fast entry.
 
-## Features
+## What it does
 
-- Express backend with CommonJS modules.
-- Plain HTML/CSS/vanilla JS frontend served from `/public`.
-- Live NBA games from API-Sports.
-- Moneyline odds from The Odds API (server-side cache ~5 minutes).
-- True Shooting % calculator per game on click.
-- Basic security via Helmet and rate limiting.
+- 1-page, 3-quadrant layout:
+  - **Quad 1:** Source-of-truth form + saved log table
+  - **Quad 2:** Read-only calculator output (updates instantly)
+  - **Quad 3:** Terminal-style parser input + reset controls
+- Stores snapshots in **SQLite** (`snapshots.db`, auto-created).
+- Fully local manual data entry workflow.
+- Parses canonical terminal format:
+  - `TEAM_A TEAM_B | SCORE_A-SCORE_B | Q{quarter} M:SS | FGA x-y | FTA x-y | TOV x-y | ODDS +### -###`
+- Saves both raw fields and computed fields.
+- CSV export and template copy button.
 
-## Getting Started
+## Setup
 
-1. **Install dependencies**
-   ```bash
-   npm install
-   ```
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install fastapi uvicorn jinja2
+```
 
-2. **Configure environment**
-   ```bash
-   cp .env.example .env
-   ```
-   Fill in the API keys in `.env`.
+## Run
 
-3. **Start the server**
-   ```bash
-   npm start
-   ```
+```bash
+uvicorn main:app --reload
+```
 
-The app will be available at `http://localhost:3000`.
+Then open: `http://127.0.0.1:8000`
 
-## Environment Variables
+## Routes
 
-- `ODDS_API_KEY`: The Odds API key.
-- `APISPORTS_API_KEY`: API-Sports key.
-- `ODDS_API_BASE_URL`: Optional override for The Odds API base URL.
-- `APISPORTS_BASE_URL`: Optional override for API-Sports base URL.
-- `ODDS_SPORT`: Odds API sport key (default: `basketball_nba`).
-- `ODDS_REGION`: Odds API region (default: `us`).
-- `ODDS_MARKET`: Odds API market (default: `h2h`).
-- `APISPORTS_NBA_LEAGUE_ID`: API-Sports NBA league id (default: `12`).
-
-## API Endpoints
-
-- `GET /api/games` — Today’s NBA games with live scores.
-- `GET /api/odds` — Moneyline odds (cached server-side ~5 minutes).
-- `GET /api/game/:gameId/true-shooting` — Calculates true shooting % using team totals.
+- `GET /` — app page
+- `GET /api/snapshots` — all snapshots (latest first)
+- `POST /api/snapshots` — insert snapshot
+- `DELETE /api/snapshots/{id}` — delete snapshot (optional helper)
 
 ## Notes
 
-- The frontend polls `/api/games` every ~30 seconds for score updates.
-- True shooting updates only when a user clicks a game card.
-- Railway will use the `npm start` command automatically.
+- Parser behavior: this app requires all canonical terminal segments. If missing/invalid, it shows a clear error and **does not overwrite** current form values.
+- Pace threshold defaults to `30` and can be changed per entry.

@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NBA PPP Edge Logger</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <main class="grid">
+    <section class="card q1">
+      <h2>Log Table + Source-of-Truth Row</h2>
+      <div id="errorBox" class="error hidden"></div>
+      <form id="snapshotForm" class="form-grid">
+        <label>Date<input name="date" type="date" required /></label>
+        <label>Team A<input name="team_a" required /></label>
+        <label>Team B<input name="team_b" required /></label>
+
+        <label>Score A<input name="score_a" type="number" min="0" required /></label>
+        <label>Score B<input name="score_b" type="number" min="0" required /></label>
+        <label>Quarter<input name="quarter" placeholder="1-4 or OT" required /></label>
+        <label>Clock<input name="clock" placeholder="M:SS" required /></label>
+
+        <label>FGA A<input name="fga_a" type="number" min="0" required /></label>
+        <label>FTA A<input name="fta_a" type="number" min="0" required /></label>
+        <label>TOV A<input name="tov_a" type="number" min="0" required /></label>
+
+        <label>FGA B<input name="fga_b" type="number" min="0" required /></label>
+        <label>FTA B<input name="fta_b" type="number" min="0" required /></label>
+        <label>TOV B<input name="tov_b" type="number" min="0" required /></label>
+
+        <label>Live Odds A<input name="live_odds_a" type="number" required /></label>
+        <label>Live Odds B<input name="live_odds_b" type="number" required /></label>
+
+        <label>Pregame Odds A<input name="pregame_odds_a" type="number" /></label>
+        <label>Pregame Odds B<input name="pregame_odds_b" type="number" /></label>
+        <label>Close Odds Pick<input name="close_odds_pick" type="number" /></label>
+        <label>Pick Side
+          <select name="pick_side">
+            <option value="">--</option>
+            <option value="A">A</option>
+            <option value="B">B</option>
+          </select>
+        </label>
+        <label>Result
+          <select name="result">
+            <option value="">--</option>
+            <option value="win">win</option>
+            <option value="loss">loss</option>
+            <option value="push">push</option>
+          </select>
+        </label>
+        <label>Pace Threshold<input name="pace_threshold" type="number" step="0.1" value="30" required /></label>
+        <label class="notes">Notes<textarea name="notes" rows="2"></textarea></label>
+      </form>
+
+      <div class="actions">
+        <button id="saveBtn" type="button">Save Snapshot</button>
+        <button id="exportBtn" type="button">Export CSV</button>
+      </div>
+
+      <table id="snapshotsTable">
+        <thead>
+          <tr>
+            <th>ID</th><th>Date</th><th>Teams</th><th>Score</th><th>Q/Clock</th><th>Edge%</th><th>Verdict</th><th>CLV</th><th>Created</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <section class="card q2">
+      <h2>Calculator Output</h2>
+      <p class="tiny">Edge denominator = losing-team PPP (min PPP).</p>
+      <dl id="calcOut" class="output"></dl>
+    </section>
+
+    <section class="card q3">
+      <h2>Terminal Input</h2>
+      <p class="tiny">Behavior: parser requires all canonical segments; on missing/invalid fields, it shows an error and does not overwrite current form values.</p>
+      <textarea id="terminalInput" rows="4" placeholder="LAL BOS | 71-78 | Q3 5:32 | FGA 55-58 | FTA 12-16 | TOV 8-10 | ODDS +154 -176"></textarea>
+      <div class="actions">
+        <button id="parseBtn" type="button">Parse → Fill</button>
+        <button id="resetTerminalBtn" type="button">Reset Terminal</button>
+        <button id="resetAllBtn" type="button">Reset Terminal + Live Fields</button>
+        <button id="copyTemplateBtn" type="button">Copy Terminal Template</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
